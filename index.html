@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>영화와 게임으로 채우는 나만의 휴식 시간 | My Hobby Life</title>
+    <!-- Pretendard 폰트 불러오기 -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    <style>
+        /* 기본 설정 및 CSS 변수 (라이트 모드) */
+        :root {
+            --main-color: #4A6FA5;
+            --bg-color: #F5F8FC;
+            --point-color: #FFD166;
+            --text-color: #1E293B;
+            --text-light: #475569;
+            --white: #FFFFFF;
+            
+            /* 테마별 디테일 색상 */
+            --header-bg: rgba(255, 255, 255, 0.9);
+            --hero-grad-start: #F5F8FC;
+            --hero-grad-end: #E2EAF4;
+            --gallery-grad-start: #a8b8d0;
+            --gallery-grad-end: #7e95b5;
+            --footer-bg: #1E293B;
+            --meaning-bg: #4A6FA5;
+            --meaning-text: #FFFFFF;
+            --film-bg: #333333;
+
+            /* 그림자 & 라운드 */
+            --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 20px 25px rgba(0, 0, 0, 0.1);
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --transition: all 0.3s ease;
+        }
+
+        /* 다크 모드 (흑백 모드) 설정 */
+        [data-theme="dark"] {
+            --main-color: #64748B;
+            --bg-color: #0F172A;
+            --point-color: #FBBF24;
+            --text-color: #F8FAFC;
+            --text-light: #94A3B8;
+            --white: #1E293B;
+            
+            --header-bg: rgba(15, 23, 42, 0.9);
+            --hero-grad-start: #0F172A;
+            --hero-grad-end: #1E293B;
+            --gallery-grad-start: #334155;
+            --gallery-grad-end: #0F172A;
+            --footer-bg: #020617;
+            --meaning-bg: #1E293B;
+            --meaning-text: #F8FAFC;
+            --film-bg: #000000;
+
+            --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 20px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Pretendard', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* 공통 레이아웃 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        section {
+            padding: 100px 0;
+            scroll-margin-top: 90px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--main-color);
+            transition: var(--transition);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 50px;
+            transition: var(--transition);
+        }
+
+        /* 내비게이션 바 */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--header-bg);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--main-color);
+            transition: var(--transition);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--main-color);
+        }
+
+        .theme-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .theme-btn:hover {
+            transform: scale(1.2) rotate(15deg);
+        }
+
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: var(--text-color);
+            border-radius: 3px;
+            transition: var(--transition);
+        }
+
+        /* 히어로 섹션 */
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding-top: 70px;
+            background: linear-gradient(135deg, var(--hero-grad-start) 0%, var(--hero-grad-end) 100%);
+            transition: var(--transition);
+            overflow: hidden;
+        }
+
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: var(--text-color);
+            line-height: 1.2;
+            transition: var(--transition);
+        }
+
+        .hero-catchphrase {
+            font-size: 1.5rem;
+            color: var(--main-color);
+            margin-bottom: 40px;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .hero-graphics {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            margin-top: 50px;
+        }
+
+        .css-film {
+            width: 100px;
+            height: 100px;
+            background-color: var(--film-bg);
+            border-radius: 8px;
+            position: relative;
+            border-left: 10px dashed var(--bg-color);
+            border-right: 10px dashed var(--bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-md);
+            animation: float 4s ease-in-out infinite;
+            transition: var(--transition);
+        }
+        .css-film::after {
+            content: "N";
+            color: #E50914;
+            font-size: 2.5rem;
+            font-weight: 900;
+            font-family: Arial, sans-serif;
+        }
+
+        .css-gamepad {
+            width: 120px;
+            height: 80px;
+            background-color: var(--main-color);
+            border-radius: 40px;
+            position: relative;
+            box-shadow: var(--shadow-md);
+            animation: float 4s ease-in-out infinite 1s;
+            transition: var(--transition);
+        }
+        .css-gamepad::before {
+            content: "+";
+            position: absolute;
+            left: 20px;
+            top: 25px;
+            font-size: 30px;
+            color: #FFFFFF;
+            line-height: 1;
+            font-weight: bold;
+        }
+        .css-gamepad::after {
+            content: "";
+            position: absolute;
+            right: 25px;
+            top: 30px;
+            width: 12px;
+            height: 12px;
+            background-color: var(--point-color);
+            border-radius: 50%;
+            box-shadow: 15px -10px 0 #FFFFFF, -10px 15px 0 #FFFFFF;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* 콘텐츠 영역 CSS */
+        .intro-text {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.2rem;
+            color: var(--text-light);
+            background-color: var(--white);
+            padding: 40px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+        .intro-text strong {
+            color: var(--main-color);
+        }
+
+        .hobbies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .hobby-card {
+            background-color: var(--white);
+            padding: 50px 40px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            transition: var(--transition);
+        }
+        .hobby-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+        .hobby-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        .hobby-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+        .hobby-card p {
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        .tag {
+            background-color: var(--bg-color);
+            color: var(--main-color);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .charms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .charm-card {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: var(--radius-md);
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border-top: 4px solid var(--point-color);
+        }
+        .charm-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-md);
+        }
+        .charm-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--main-color);
+        }
+
+        .flow-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .flow-step {
+            flex: 1;
+            min-width: 200px;
+            background-color: var(--white);
+            padding: 30px 20px;
+            border-radius: var(--radius-md);
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            transition: var(--transition);
+        }
+        .flow-step::after {
+            content: '➔';
+            position: absolute;
+            right: -25px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: var(--main-color);
+            z-index: 10;
+        }
+        .flow-step:last-child::after {
+            display: none;
+        }
+        .step-num {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background-color: var(--point-color);
+            color: #1E293B;
+            border-radius: 50%;
+            line-height: 30px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        #meaning {
+            background-color: var(--meaning-bg);
+            color: var(--meaning-text);
+            text-align: center;
+            transition: var(--transition);
+        }
+        #meaning .section-title {
+            color: var(--meaning-text);
+        }
+        #meaning .section-subtitle {
+            color: var(--meaning-text);
+            opacity: 0.8;
+        }
+        .meaning-content {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto;
+            font-weight: 300;
+        }
+        .meaning-content strong {
+            color: var(--point-color);
+            font-weight: 700;
+        }
+
+        /* 나누기 섹션 스타일 추가 */
+        .share-box {
+            background: var(--white);
+            padding: 40px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            max-width: 800px;
+            margin: 0 auto;
+            transition: var(--transition);
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: var(--radius-md);
+            border: 1px solid #ddd;
+            resize: none;
+            background: var(--bg-color);
+            color: var(--text-color);
+        }
+        .share-list {
+            margin-top: 30px;
+            border-top: 2px solid var(--main-color);
+            padding-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .share-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 1.05rem;
+        }
+        .share-item strong {
+            color: var(--main-color);
+            margin-right: 10px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .gallery-item {
+            position: relative;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            background: linear-gradient(135deg, var(--gallery-grad-start) 0%, var(--gallery-grad-end) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        .gallery-item:hover {
+            transform: scale(1.02);
+            box-shadow: var(--shadow-md);
+        }
+        .gallery-item span {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #FFFFFF;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 80px 0 120px 0;
+        }
+        .btn {
+            display: inline-block;
+            background-color: var(--point-color);
+            color: #1E293B;
+            padding: 16px 40px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 50px;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            box-shadow: var(--shadow-md);
+        }
+        .btn:hover {
+            transform: scale(1.05) translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        footer {
+            background-color: var(--footer-bg);
+            color: #FFFFFF;
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            transition: var(--transition);
+        }
+        .footer-text {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        .footer-sub {
+            color: #94A3B8;
+            font-size: 0.9rem;
+        }
+        .scroll-top {
+            position: absolute;
+            right: 40px;
+            top: -25px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--main-color);
+            color: #FFFFFF;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            border: none;
+        }
+        .scroll-top:hover {
+            filter: brightness(1.2);
+            transform: translateY(-5px);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.5rem; }
+            .hero-catchphrase { font-size: 1.2rem; }
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background-color: var(--header-bg);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 40px;
+                transition: var(--transition);
+                font-size: 1.5rem;
+            }
+            .nav-links.active { left: 0; }
+            .hamburger { display: flex; }
+            .flow-step::after { display: none; }
+            .flow-container { flex-direction: column; }
+            .flow-step { width: 100%; }
+            .scroll-top { right: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 헤더 / 내비게이션 -->
+    <header>
+        <div class="container nav-container">
+            <div class="logo">My Hobby Life</div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#hero">홈</a></li>
+                    <li><a href="#hobbies">나의 취미</a></li>
+                    <li><a href="#charms">매력 포인트</a></li>
+                    <li><a href="#flow">휴식 흐름</a></li>
+                    <li><a href="#gallery">갤러리</a></li>
+                    <li><a href="#share-section">나누기</a></li>
+                    <li><button id="theme-toggle" class="theme-btn" title="모드 전환">☀️</button></li>
+                </ul>
+            </nav>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- 1. 히어로 섹션 -->
+        <section id="hero" class="hero">
+            <canvas id="hero-canvas"></canvas>
+
+            <div class="container hero-content">
+                <h1 class="hero-title reveal">나의 취미 생활</h1>
+                <p class="hero-catchphrase reveal">영화와 게임으로 채우는 나만의 휴식 시간</p>
+                
+                <div class="hero-graphics reveal">
+                    <div class="css-film" title="넷플릭스 영화"></div>
+                    <div class="css-gamepad" title="게임 컨트롤러"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. 간단한 자기소개 -->
+        <section id="intro" class="container reveal">
+            <div class="intro-text">
+                안녕하세요, 함께 공부하는 교육생 여러분! ✋<br>
+                평소에는 다 함께 <strong>학습과 개발에 집중</strong>하며 바쁜 일상을 보내고 있지만,<br>
+                집에 돌아온 후의 쉬는 시간에는 <strong>영화와 게임</strong>으로 저만의 완벽한 휴식을 즐기고 있습니다.<br>
+                제가 어떻게 하루의 피로를 풀고 에너지를 충전하는지 소개합니다!
+            </div>
+        </section>
+
+        <!-- 3. 내 취미 생활 -->
+        <section id="hobbies" class="container">
+            <h2 class="section-title reveal">내 취미 생활</h2>
+            <p class="section-subtitle reveal">두 가지 매력으로 채우는 여가 시간</p>
+            
+            <div class="hobbies-grid">
+                <div class="hobby-card reveal">
+                    <div class="hobby-icon">🎬</div>
+                    <h3>자유로운 영화 감상</h3>
+                    <p>정해진 시간이나 횟수 없이, 보고 싶은 작품이 떠올랐을 때 자유롭게 넷플릭스를 켭니다. 장르를 불문하고 몰입하는 그 순간이 최고의 힐링입니다.</p>
+                    <div class="tags">
+                        <span class="tag">#넷플릭스</span>
+                        <span class="tag">#영화감상</span>
+                        <span class="tag">#자유로운선택</span>
+                        <span class="tag">#몰입의시간</span>
+                    </div>
+                </div>
+
+                <div class="hobby-card reveal">
+                    <div class="hobby-icon">🎮</div>
+                    <h3>친구들과 롤 칼바람</h3>
+                    <p>각자 퇴근하고 돌아온 밤, 친구들과 디스코드로 모여 약 2시간 동안 롤 칼바람 나락을 즐깁니다. 치열한 전투보다는 함께 웃고 떠드는 시간이 핵심입니다.</p>
+                    <div class="tags">
+                        <span class="tag">#리그오브레전드</span>
+                        <span class="tag">#칼바람나락</span>
+                        <span class="tag">#퇴근후2시간</span>
+                        <span class="tag">#디스코드</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. 취미의 매력 포인트 -->
+        <section id="charms" class="container">
+            <h2 class="section-title reveal">취미의 핵심 매력 4가지</h2>
+            <p class="section-subtitle reveal">이 취미들을 꾸준히 사랑하는 이유</p>
+            
+            <div class="charms-grid">
+                <div class="charm-card reveal">
+                    <h4>자유로운 감상</h4>
+                    <p>의무감 없이, 그저 내가 원할 때 보고 싶은 영화를 플레이합니다.</p>
+                </div>
+                <div class="charm-card reveal">
+                    <h4>기분에 따른 선택</h4>
+                    <p>피곤한 날은 가벼운 코미디를, 생각하고 싶은 날은 깊이 있는 스릴러를 고릅니다.</p>
+                </div>
+                <div class="charm-card reveal">
+                    <h4>친구들과의 게임</h4>
+                    <p>비슷한 시간에 퇴근한 친구들과 모여 게임을 핑계로 하루의 회포를 풉니다.</p>
+                </div>
+                <div class="charm-card reveal">
+                    <h4>꾸준한 소통</h4>
+                    <p>바쁜 일상 속에서도 게임이라는 매개체 덕분에 자연스럽고 깊게 관계를 이어갑니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. 나의 휴식 흐름 -->
+        <section id="flow" class="container">
+            <h2 class="section-title reveal">나의 휴식 흐름</h2>
+            <p class="section-subtitle reveal">하루 일과를 마치고 시작되는 루틴</p>
+            
+            <div class="flow-container">
+                <div class="flow-step reveal">
+                    <div class="step-num">1</div>
+                    <h4>하루 일과 마무리</h4>
+                    <p>학습과 일상을 마치고 귀가</p>
+                </div>
+                <div class="flow-step reveal">
+                    <div class="step-num">2</div>
+                    <h4>선택의 시간</h4>
+                    <p>볼 영화 탐색 or 친구들과 접속</p>
+                </div>
+                <div class="flow-step reveal">
+                    <div class="step-num">3</div>
+                    <h4>몰입과 소통</h4>
+                    <p>영화 감상이나 게임 플레이</p>
+                </div>
+                <div class="flow-step reveal">
+                    <div class="step-num">4</div>
+                    <h4>기분 전환</h4>
+                    <p>피로 회복 및 새로운 내일을 위한 휴식</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. 취미가 나에게 주는 의미 -->
+        <section id="meaning">
+            <div class="container reveal">
+                <h2 class="section-title">취미가 나에게 주는 의미</h2>
+                <p class="section-subtitle">단순한 시간 보내기, 그 이상</p>
+                
+                <div class="meaning-content">
+                    <p>
+                        영화는 온전히 <strong>나에게 집중하며 편안하게 몰입</strong>할 수 있는 독립적인 시간입니다.<br>
+                        반면, 게임은 다 함께 웃고 대화하며 <strong>친구들과의 관계를 단단하게 이어가는</strong> 사회적인 시간이죠.<br><br>
+                        결국 이 두 가지 취미는 모두, 하루의 피로를 씻어내고 <strong>내일 다시 공부와 일상에 집중할 수 있도록 돕는 저만의 완벽한 힐링 스위치</strong>입니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. 취미 갤러리 -->
+        <section id="gallery" class="container">
+            <h2 class="section-title reveal">취미 갤러리</h2>
+            <p class="section-subtitle reveal">나만의 휴식 조각들</p>
+            
+            <div class="gallery-grid">
+                <div class="gallery-item reveal"><span>영화 감상</span></div>
+                <div class="gallery-item reveal"><span>오늘의 작품</span></div>
+                <div class="gallery-item reveal"><span>편안한 휴식</span></div>
+                <div class="gallery-item reveal"><span>친구들과 칼바람</span></div>
+                <div class="gallery-item reveal"><span>게임 속 소통</span></div>
+                <div class="gallery-item reveal"><span>퇴근 후 2시간</span></div>
+            </div>
+        </section>
+
+        <!-- 8. 나누기 섹션 (본인 취미 작성 및 사람들의 취미 보기) -->
+        <section id="share-section" class="container reveal">
+            <h2 class="section-title">취미 이야기 나누기</h2>
+            <p class="section-subtitle">자유롭게 본인의 취미를 작성하고 다른 사람들과 공유해보세요!</p>
+            <div class="share-box">
+                <textarea id="hobby-input" placeholder="나만의 취미를 자유롭게 적어주세요!"></textarea>
+                <button class="btn" onclick="addHobby()" style="width: 100%; padding: 12px; font-size: 1rem;">등록하기</button>
+                <div class="share-list" id="share-list">
+                    <!-- 입력된 익명 취미 목록들이 이곳에 추가됩니다 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. CTA (버튼 클릭 시 나누기 섹션으로 스크롤 이동하도록 연결) -->
+        <section id="cta" class="cta-section container reveal">
+            <button class="btn" id="cta-btn">나와 취미 이야기 나누기</button>
+        </section>
+    </main>
+
+    <!-- 10. 푸터 -->
+    <footer>
+        <button class="scroll-top" id="scrollTopBtn" title="상단으로 이동">↑</button>
+        <p class="footer-text">"영화와 게임으로 채우는 나만의 휴식 시간"</p>
+        <p class="footer-sub">Made with HTML, CSS and JavaScript</p>
+    </footer>
+
+    <!-- 자바스크립트 -->
+    <script>
+        // --- 1. 모바일 햄버거 메뉴 토글 ---
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        const links = document.querySelectorAll('.nav-links a');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        links.forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault();
+
+                const targetId = link.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+
+                if (targetSection) {
+                    const headerHeight = document.querySelector('header').offsetHeight;
+                    const targetPosition =
+                        targetSection.getBoundingClientRect().top
+                        + window.pageYOffset
+                        - headerHeight;
+
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // --- 2. 테마(라이트/다크) 전환 및 파티클 색상 동기화 ---
+        const themeToggle = document.getElementById('theme-toggle');
+        
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+                themeToggle.textContent = '☀️';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '🌙';
+            }
+            initParticles();
+        });
+
+        // --- 3. 스크롤 및 등장 애니메이션 (CTA 버튼을 누르면 '나누기' 섹션으로 이동) ---
+        document.getElementById('cta-btn').addEventListener('click', () => {
+            const shareSection = document.getElementById('share-section');
+            const headerOffset = document.querySelector('header').offsetHeight;
+            const elementPosition = shareSection.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+            
+            window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+        });
+
+        document.getElementById('scrollTopBtn').addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // --- 4. 익명 게시판(나누기) 로직 ---
+        let count = 1;
+        function addHobby() {
+            const input = document.getElementById('hobby-input');
+            const list = document.getElementById('share-list');
+            
+            if (input.value.trim() === "") {
+                alert("내용을 입력해주세요!");
+                return;
+            }
+            
+            const newItem = document.createElement('div');
+            newItem.className = 'share-item';
+            newItem.innerHTML = `<strong>익명 ${count}</strong>: ${input.value}`;
+            list.prepend(newItem); // 새로운 글이 위로 오도록 추가
+            
+            count++;
+            input.value = "";
+        }
+
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            root: null,
+            threshold: 0.15,
+            rootMargin: "0px 0px -50px 0px"
+        });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+
+        // --- 5. 히어로 배경 파티클(빛/조명) 애니메이션 ---
+        const canvas = document.getElementById('hero-canvas');
+        const ctx = canvas.getContext('2d');
+        let particlesArray = [];
+        
+        function setCanvasSize() {
+            canvas.width = canvas.parentElement.offsetWidth;
+            canvas.height = canvas.parentElement.offsetHeight;
+        }
+
+        function getThemeColors() {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                return ['rgba(255, 255, 255, 0.6)', 'rgba(255, 209, 102, 0.7)'];
+            } else {
+                return ['rgba(74, 111, 165, 0.5)', 'rgba(245, 158, 11, 0.5)'];
+            }
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1.5; 
+                this.speedX = (Math.random() - 0.5) * 0.4; 
+                this.speedY = (Math.random() - 0.5) * 0.4;
+                
+                const colors = getThemeColors();
+                this.color = Math.random() > 0.4 ? colors[0] : colors[1];
+            }
+            
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x < 0) this.x = canvas.width;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.y < 0) this.y = canvas.height;
+                if (this.y > canvas.height) this.y = 0;
+            }
+            
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 12;
+                ctx.shadowColor = this.color;
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            setCanvasSize();
+            const isMobile = window.innerWidth < 768;
+            const numberOfParticles = isMobile ? 15 : 40;
+            
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+
+        window.addEventListener('resize', () => {
+            initParticles();
+        });
+
+        initParticles();
+        animateParticles();
+    </script>
+</body>
+</html>
