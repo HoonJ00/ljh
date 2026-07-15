@@ -47,6 +47,20 @@ function deleteAllFavorites() {
   loadFavorites()
 }
 
+/**
+ * 실제 이미지 주소가 깨졌을 때
+ * 대체 이미지를 한 번만 적용합니다.
+ */
+function handleImageError(event) {
+  if (event.target.dataset.fallbackApplied === 'true') {
+    return
+  }
+
+  event.target.dataset.fallbackApplied = 'true'
+  event.target.src = '/images/image-preparing.jpg'
+  event.target.classList.add('fallback-image')
+}
+
 onMounted(() => {
   loadFavorites()
 })
@@ -57,6 +71,7 @@ onMounted(() => {
     <section class="page-heading">
       <div>
         <p>MY FAVORITES</p>
+
         <h1>찜해부렀어</h1>
 
         <span>
@@ -111,14 +126,20 @@ onMounted(() => {
             class="image-link"
           >
             <img
-              v-if="favorite.firstimage"
-              :src="favorite.firstimage"
-              :alt="favorite.title"
+              :src="
+                favorite.firstimage ||
+                '/images/image-preparing.jpg'
+              "
+              :alt="
+                favorite.firstimage
+                  ? favorite.title
+                  : `${favorite.title} 이미지 준비 중`
+              "
+              :class="{
+                'fallback-image': !favorite.firstimage,
+              }"
+              @error="handleImageError"
             />
-
-            <div v-else class="no-image">
-              이미지 없음
-            </div>
           </RouterLink>
 
           <span class="order-badge">
@@ -264,6 +285,7 @@ onMounted(() => {
 .image-area {
   position: relative;
   height: 190px;
+  overflow: hidden;
   background: #e2e8f0;
 }
 
@@ -274,17 +296,18 @@ onMounted(() => {
 }
 
 .image-area img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.no-image {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  color: #94a3b8;
+/* 이미지가 없거나 깨졌을 때 적용 */
+.image-area img.fallback-image {
+  box-sizing: border-box;
+  object-fit: contain;
+  padding: 10px;
+  background: #ffffff;
 }
 
 .order-badge {
@@ -313,16 +336,22 @@ onMounted(() => {
   justify-content: center;
   width: 42px;
   height: 42px;
+  padding: 0;
   border: 0;
   border-radius: 50%;
   color: #f43f5e;
   background: rgb(255 255 255 / 92%);
   box-shadow: 0 4px 12px rgb(15 23 42 / 18%);
   font-size: 23px;
+  line-height: 1;
   cursor: pointer;
+  transition:
+    transform 0.2s,
+    background 0.2s;
 }
 
 .remove-heart:hover {
+  background: #fff1f2;
   transform: scale(1.08);
 }
 

@@ -31,7 +31,7 @@ import { categories } from '@/data/categories'
           to="/favorites"
           class="navigation-link favorite-link"
         >
-          찜해부렀어
+          찜해부렀어<span class="favorite-heart">♥</span>
         </RouterLink>
       </nav>
     </div>
@@ -50,14 +50,14 @@ import { categories } from '@/data/categories'
 .header-inner {
   display: flex;
   align-items: center;
-  width: min(1400px, 94%);
+  justify-content: space-between;
+  width: min(1480px, 94%);
   min-height: 72px;
   margin: 0 auto;
 }
 
 .logo {
   flex-shrink: 0;
-  margin-right: 40px;
   color: #2563eb;
   font-size: 27px;
   font-weight: 800;
@@ -68,11 +68,14 @@ import { categories } from '@/data/categories'
   display: flex;
   align-items: center;
   gap: 25px;
+  margin-left: auto;
+  padding-left: 70px;
   overflow-x: auto;
   white-space: nowrap;
 }
 
 .navigation-link {
+  flex-shrink: 0;
   padding: 25px 0;
   color: #374151;
   font-size: 15px;
@@ -106,6 +109,35 @@ import { categories } from '@/data/categories'
   font-weight: 800;
 }
 
+.favorite-heart {
+  display: inline-block;
+  margin-left: 3px;
+  color: #f43f5e;
+  font-size: 14px;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.favorite-link:hover .favorite-heart,
+.favorite-link.router-link-active .favorite-heart {
+  color: #e11d48;
+}
+
+@media (max-width: 1200px) {
+  .header-inner {
+    width: 96%;
+  }
+
+  .navigation {
+    gap: 18px;
+    padding-left: 35px;
+  }
+
+  .navigation-link {
+    font-size: 14px;
+  }
+}
+
 @media (max-width: 900px) {
   .header-inner {
     display: block;
@@ -118,6 +150,8 @@ import { categories } from '@/data/categories'
   }
 
   .navigation {
+    margin-left: 0;
+    padding-left: 0;
     gap: 20px;
   }
 

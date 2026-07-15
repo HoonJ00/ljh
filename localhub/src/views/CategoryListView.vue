@@ -18,16 +18,28 @@ const searchKeyword = ref('')
 // 현재 선택한 지역
 const selectedArea = ref('전체')
 
+// 광주광역시에 포함되는 자치구
+const gwangjuDistricts = [
+  '광산구',
+  '남구',
+  '동구',
+  '북구',
+  '서구',
+]
+
 const category = computed(() => {
   return findCategory(route.params.category)
 })
 
 /**
- * 주소에서 시·군·구 이름 추출
+ * 주소에서 시·군·구 이름을 추출합니다.
+ *
+ * 광산구, 남구, 동구, 북구, 서구는
+ * 모두 '광주광역시'로 반환합니다.
  *
  * 예:
  * 전남광주통합특별시 북구 무등로 1050
- * → 북구
+ * → 광주광역시
  *
  * 전남광주통합특별시 담양군 담양읍 죽녹원로 134
  * → 담양군
@@ -38,8 +50,13 @@ function extractAreaName(address) {
   }
 
   const addressParts = address.trim().split(/\s+/)
+  const areaName = addressParts[1] || '기타'
 
-  return addressParts[1] || '기타'
+  if (gwangjuDistricts.includes(areaName)) {
+    return '광주광역시'
+  }
+
+  return areaName
 }
 
 /**
@@ -119,6 +136,19 @@ function handleFavorite(place) {
   if (result.success) {
     favorites.value = getFavorites()
   }
+}
+
+/**
+ * 실제 이미지 주소가 깨졌을 때 대체 이미지 적용
+ */
+function handleImageError(event) {
+  if (event.target.dataset.fallbackApplied === 'true') {
+    return
+  }
+
+  event.target.dataset.fallbackApplied = 'true'
+  event.target.src = '/images/image-preparing.jpg'
+  event.target.classList.add('fallback-image')
 }
 
 async function loadPlaces() {
@@ -247,14 +277,17 @@ watch(
               class="image-link"
             >
               <img
-                v-if="place.firstimage"
-                :src="place.firstimage"
-                :alt="place.title"
+                :src="place.firstimage || '/images/image-preparing.jpg'"
+                :alt="
+                  place.firstimage
+                    ? place.title
+                    : `${place.title} 이미지 준비 중`
+                "
+                :class="{
+                  'fallback-image': !place.firstimage,
+                }"
+                @error="handleImageError"
               />
-
-              <div v-else class="no-image">
-                이미지 없음
-              </div>
             </RouterLink>
 
             <button
@@ -423,6 +456,7 @@ watch(
 .image-area {
   position: relative;
   height: 190px;
+  overflow: hidden;
   background: #e2e8f0;
 }
 
@@ -433,17 +467,18 @@ watch(
 }
 
 .image-area img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.no-image {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  color: #94a3b8;
+/* 대체 이미지에만 적용 */
+.image-area img.fallback-image {
+  box-sizing: border-box;
+  object-fit: contain;
+  padding: 10px;
+  background: #ffffff;
 }
 
 .heart-button {
