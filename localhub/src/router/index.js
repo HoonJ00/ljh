@@ -6,6 +6,7 @@ import PlaceDetailView from '@/views/PlaceDetailView.vue'
 import BoardListView from '@/views/BoardListView.vue'
 import BoardFormView from '@/views/BoardFormView.vue'
 import BoardDetailView from '@/views/BoardDetailView.vue'
+import FavoritesView from '@/views/FavoritesView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -45,6 +46,11 @@ const router = createRouter({
       path: '/board/:id/edit',
       name: 'board-edit',
       component: BoardFormView,
+    },
+    {
+      path: '/favorites',
+      name: 'favorites',
+      component: FavoritesView,
     },
     {
       path: '/:pathMatch(.*)*',

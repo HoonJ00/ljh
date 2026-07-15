@@ -26,6 +26,13 @@ import { categories } from '@/data/categories'
         >
           커뮤니티
         </RouterLink>
+
+        <RouterLink
+          to="/favorites"
+          class="navigation-link favorite-link"
+        >
+          찜해부렀어
+        </RouterLink>
       </nav>
     </div>
   </header>
@@ -79,6 +86,24 @@ import { categories } from '@/data/categories'
 .navigation-link.router-link-active {
   color: #2563eb;
   font-weight: 700;
+}
+
+.community-link {
+  font-weight: 700;
+}
+
+.favorite-link {
+  color: #f43f5e;
+  font-weight: 700;
+}
+
+.favorite-link:hover {
+  color: #e11d48;
+}
+
+.favorite-link.router-link-active {
+  color: #e11d48;
+  font-weight: 800;
 }
 
 @media (max-width: 900px) {
