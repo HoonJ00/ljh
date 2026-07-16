@@ -1,41 +1,259 @@
 <script setup>
-import { onBeforeUnmount, onMounted, ref } from 'vue'
-import { RouterLink } from 'vue-router'
+import {
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+} from 'vue'
+import { useRouter } from 'vue-router'
 import { categories } from '@/data/categories'
+import { extractAreaName } from '@/utils/regionUtils'
 
+const router = useRouter()
+
+/* 계절별 메인 배경 이미지 */
 const seasonImages = [
   {
     season: '봄',
     src: '/season/spring.jpg',
-
-    // 벚꽃과 고분이 함께 보이도록 왼쪽 중앙 기준
     position: 'center 55%',
   },
   {
     season: '여름',
     src: '/season/summer.jpg',
-
-    // 대나무 길의 중심이 잘 보이도록 중앙 배치
     position: 'center 52%',
   },
   {
     season: '가을',
     src: '/season/fall.jpg',
-
-    // 정자와 산, 반영이 함께 보이도록 중앙 배치
     position: 'center 55%',
   },
   {
     season: '겨울',
     src: '/season/winter.jpg',
-
-    // 성곽과 누각이 잘 보이도록 중앙보다 약간 위쪽 배치
     position: 'center 45%',
   },
 ]
 
+/*
+ * jeolla-map.jpg 전체 이미지 기준 좌표입니다.
+ *
+ * top 값이 커질수록 아래로 이동합니다.
+ * left 값이 커질수록 오른쪽으로 이동합니다.
+ *
+ * 흰색 점과 조금 어긋나는 경우
+ * 0.1%~0.5% 단위로 수정하면 됩니다.
+ */
+const regionPoints = [
+  /* 전북 지역 */
+  {
+    name: '군산시',
+    top: '6.3%',
+    left: '47%',
+  },
+  {
+    name: '익산시',
+    top: '7.8%',
+    left: '52.1%',
+  },
+  {
+    name: '완주군',
+    top: '8.8%',
+    left: '57.7%',
+  },
+  {
+    name: '전주시',
+    top: '14.8%',
+    left: '54.8%',
+  },
+  {
+    name: '김제시',
+    top: '14.6%',
+    left: '49.2%',
+  },
+  {
+    name: '부안군',
+    top: '18.3%',
+    left: '46.8%',
+  },
+  {
+    name: '정읍시',
+    top: '23.9%',
+    left: '49.7%',
+  },
+  {
+    name: '고창군',
+    top: '32.4%',
+    left: '43.7%',
+  },
+  {
+    name: '순창군',
+    top: '33%',
+    left: '53.3%',
+  },
+  {
+    name: '임실군',
+    top: '25.8%',
+    left: '56.1%',
+  },
+  {
+    name: '남원시',
+    top: '33.4%',
+    left: '62.4%',
+  },
+  {
+    name: '장수군',
+    top: '25.2%',
+    left: '62.1%',
+  },
+  {
+    name: '진안군',
+    top: '15.6%',
+    left: '61.1%',
+  },
+  {
+    name: '무주군',
+    top: '12.3%',
+    left: '65.8%',
+  },
+
+  /* 광주·전남 지역 */
+  {
+    name: '광주광역시',
+    top: '47.2%',
+    left: '46.9%',
+  },
+  {
+    name: '영광군',
+    top: '41.4%',
+    left: '40.6%',
+  },
+  {
+    name: '장성군',
+    top: '40.2%',
+    left: '46.7%',
+  },
+  {
+    name: '담양군',
+    top: '43.2%',
+    left: '51%',
+  },
+  {
+    name: '곡성군',
+    top: '40.4%',
+    left: '57.1%',
+  },
+  {
+    name: '구례군',
+    top: '45.1%',
+    left: '61%',
+  },
+  {
+    name: '함평군',
+    top: '50.2%',
+    left: '41%',
+  },
+  {
+    name: '나주시',
+    top: '52.1%',
+    left: '45%',
+  },
+  {
+    name: '화순군',
+    top: '50.3%',
+    left: '50.8%',
+  },
+  {
+    name: '순천시',
+    top: '55.1%',
+    left: '60.5%',
+  },
+  {
+    name: '광양시',
+    top: '57.6%',
+    left: '66%',
+  },
+  {
+    name: '무안군',
+    top: '53.5%',
+    left: '40.9%',
+  },
+  {
+    name: '목포시',
+    top: '62.3%',
+    left: '39%',
+  },
+  {
+    name: '영암군',
+    top: '62.4%',
+    left: '45.1%',
+  },
+  {
+    name: '강진군',
+    top: '69.8%',
+    left: '46.2%',
+  },
+  {
+    name: '장흥군',
+    top: '68.7%',
+    left: '49.1%',
+  },
+  {
+    name: '보성군',
+    top: '64.4%',
+    left: '53.4%',
+  },
+  {
+    name: '여수시',
+    top: '63.6%',
+    left: '65.9%',
+  },
+  {
+    name: '고흥군',
+    top: '72.1%',
+    left: '57.3%',
+  },
+  {
+    name: '해남군',
+    top: '73.2%',
+    left: '42.9%',
+  },
+  {
+    name: '진도군',
+    top: '76.6%',
+    left: '36.2%',
+  },
+  {
+    name: '완도군',
+    top: '84.2%',
+    left: '45.2%',
+  },
+]
+
+/* 계절 슬라이드 상태 */
 const currentSlide = ref(0)
 let slideTimer = null
+
+/* 지도 모달 상태 */
+const isMapOpen = ref(false)
+const selectedCategory = ref(null)
+const availableRegions = ref([])
+const isMapLoading = ref(false)
+const mapError = ref('')
+
+/*
+ * 현재 선택한 카테고리의 데이터가 존재하는
+ * 지역 포인트만 반환하고 가나다순으로 정렬합니다.
+ */
+const visibleRegionPoints = computed(() => {
+  return regionPoints
+    .filter((region) => {
+      return availableRegions.value.includes(region.name)
+    })
+    .sort((a, b) => {
+      return a.name.localeCompare(b.name, 'ko')
+    })
+})
 
 function showNextSlide() {
   currentSlide.value =
@@ -48,6 +266,10 @@ function selectSlide(index) {
 }
 
 function startSlideTimer() {
+  if (slideTimer) {
+    return
+  }
+
   slideTimer = setInterval(() => {
     showNextSlide()
   }, 4000)
@@ -67,12 +289,120 @@ function restartSlideTimer() {
   startSlideTimer()
 }
 
+async function openRegionMap(category) {
+  selectedCategory.value = category
+  availableRegions.value = []
+  mapError.value = ''
+  isMapLoading.value = true
+  isMapOpen.value = true
+
+  stopSlideTimer()
+  document.body.style.overflow = 'hidden'
+
+  try {
+    if (!category.file) {
+      throw new Error(
+        `${category.name} 데이터 파일 경로가 설정되지 않았습니다.`,
+      )
+    }
+
+    const response = await fetch(category.file)
+
+    if (!response.ok) {
+      throw new Error(
+        `${category.name} 데이터를 불러오지 못했습니다.`,
+      )
+    }
+
+    const data = await response.json()
+
+    const items = Array.isArray(data.items)
+      ? data.items
+      : []
+
+    const extractedRegions = items
+      .map((item) => {
+        return extractAreaName(item.addr1)
+      })
+      .filter(Boolean)
+
+    availableRegions.value = [
+      ...new Set(extractedRegions),
+    ].sort((a, b) => {
+      return a.localeCompare(b, 'ko')
+    })
+
+    console.log(
+      `${category.name} 데이터 지역:`,
+      availableRegions.value,
+    )
+  } catch (error) {
+    console.error(error)
+
+    mapError.value =
+      error instanceof Error
+        ? error.message
+        : '지역 데이터를 불러오지 못했습니다.'
+  } finally {
+    isMapLoading.value = false
+  }
+}
+
+function closeRegionMap() {
+  isMapOpen.value = false
+  selectedCategory.value = null
+  availableRegions.value = []
+  mapError.value = ''
+  isMapLoading.value = false
+
+  document.body.style.overflow = ''
+  startSlideTimer()
+}
+
+function selectRegion(regionName) {
+  if (!selectedCategory.value) {
+    return
+  }
+
+  const categoryKey = selectedCategory.value.key
+
+  closeRegionMap()
+
+  router.push({
+    path: `/category/${categoryKey}`,
+    query: {
+      area: regionName,
+    },
+  })
+}
+
+function handleKeydown(event) {
+  if (
+    event.key === 'Escape' &&
+    isMapOpen.value
+  ) {
+    closeRegionMap()
+  }
+}
+
 onMounted(() => {
   startSlideTimer()
+
+  window.addEventListener(
+    'keydown',
+    handleKeydown,
+  )
 })
 
 onBeforeUnmount(() => {
   stopSlideTimer()
+
+  window.removeEventListener(
+    'keydown',
+    handleKeydown,
+  )
+
+  document.body.style.overflow = ''
 })
 </script>
 
@@ -100,7 +430,9 @@ onBeforeUnmount(() => {
       <div class="hero-overlay"></div>
 
       <div class="hero-content">
-        <p class="region">광주·전라권</p>
+        <p class="region">
+          광주·전라권
+        </p>
 
         <h1>
           지역의 매력을 한곳에서 만나는<br />
@@ -108,8 +440,8 @@ onBeforeUnmount(() => {
         </h1>
 
         <p class="description">
-          관광지, 문화시설, 음식점, 축제 등 광주·전라권의 다양한 정보를
-          확인해 보세요.
+          관광지, 문화시설, 음식점, 축제 등
+          광주·전라권의 다양한 정보를 확인해 보세요.
         </p>
       </div>
 
@@ -138,28 +470,180 @@ onBeforeUnmount(() => {
     <section class="category-section">
       <div class="section-heading">
         <div>
-          <p class="section-label">EXPLORE</p>
-          <h2>카테고리별 지역 정보</h2>
+          <p class="section-label">
+            EXPLORE
+          </p>
+
+          <h2>
+            카테고리별 지역 정보
+          </h2>
         </div>
       </div>
 
       <div class="category-grid">
-        <RouterLink
+        <article
           v-for="category in categories"
           :key="category.key"
-          :to="`/category/${category.key}`"
           class="category-card"
         >
-          <h3>{{ category.name }}</h3>
+          <h3>
+            {{ category.name }}
+          </h3>
 
           <p>
-            광주·전라권 {{ category.name }} 정보 보기
+            광주·전라권
+            {{ category.name }}
+            정보 보기
           </p>
 
-          <span>바로가기 →</span>
-        </RouterLink>
+          <button
+            type="button"
+            class="category-map-button"
+            @click="openRegionMap(category)"
+          >
+            바로가기 →
+          </button>
+        </article>
       </div>
     </section>
+
+    <Teleport to="body">
+      <div
+        v-if="isMapOpen"
+        class="map-modal-backdrop"
+        @click.self="closeRegionMap"
+      >
+        <section
+          class="map-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="map-modal-title"
+        >
+          <div class="map-modal-heading">
+            <div>
+              <p class="map-modal-label">
+                지역 선택
+              </p>
+
+              <h2 id="map-modal-title">
+                {{ selectedCategory?.name }}
+                지역을 선택하세요
+              </h2>
+            </div>
+
+            <button
+              type="button"
+              class="map-close-button"
+              aria-label="지도 닫기"
+              @click="closeRegionMap"
+            >
+              ×
+            </button>
+          </div>
+
+          <p class="map-description">
+            현재 카테고리에 데이터가 존재하는
+            지역만 선택할 수 있습니다.
+          </p>
+
+          <div
+            v-if="isMapLoading"
+            class="map-status"
+          >
+            <div class="loading-spinner"></div>
+
+            <p>
+              {{ selectedCategory?.name }}
+              지역 데이터를 확인하고 있습니다.
+            </p>
+          </div>
+
+          <div
+            v-else-if="mapError"
+            class="map-status map-status-error"
+          >
+            <p>
+              {{ mapError }}
+            </p>
+
+            <button
+              type="button"
+              class="retry-button"
+              @click="openRegionMap(selectedCategory)"
+            >
+              다시 불러오기
+            </button>
+          </div>
+
+          <div
+            v-else-if="visibleRegionPoints.length === 0"
+            class="map-status"
+          >
+            <p>
+              지도에서 선택할 수 있는 지역이 없습니다.
+            </p>
+
+            <p class="map-status-subtext">
+              JSON 주소와 지도 지역명이 일치하는지
+              확인해 주세요.
+            </p>
+          </div>
+
+          <div
+            v-else
+            class="map-wrapper"
+          >
+            <img
+              src="/images/jeolla-map.jpg"
+              alt="광주·전라권 지역 선택 지도"
+              class="region-map"
+            />
+
+            <button
+              v-for="region in visibleRegionPoints"
+              :key="region.name"
+              type="button"
+              class="map-point"
+              :style="{
+                top: region.top,
+                left: region.left,
+              }"
+              :aria-label="`${region.name} 선택`"
+              @click="selectRegion(region.name)"
+            >
+              <span class="point-pulse"></span>
+              <span class="point-circle"></span>
+
+              <span class="point-label">
+                {{ region.name }}
+              </span>
+            </button>
+          </div>
+
+          <div
+            v-if="
+              !isMapLoading &&
+              !mapError &&
+              visibleRegionPoints.length > 0
+            "
+            class="map-summary"
+          >
+            <strong>
+              선택 가능 지역
+              {{ visibleRegionPoints.length }}곳
+            </strong>
+
+            <p>
+              {{
+                visibleRegionPoints
+                  .map((region) => region.name)
+                  .join(', ')
+              }}
+            </p>
+          </div>
+        </section>
+      </div>
+    </Teleport>
   </main>
 </template>
 
@@ -169,13 +653,11 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-
-  /*
-   * PC에서는 화면 너비에 따라 높이가 증가하지만,
-   * 최소 600px, 최대 760px까지만 커집니다.
-   */
-  min-height: clamp(600px, 42vw, 760px);
-
+  min-height: clamp(
+    600px,
+    42vw,
+    760px
+  );
   overflow: hidden;
   text-align: center;
   background: #dbeafe;
@@ -194,13 +676,7 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 100%;
   opacity: 0;
-
-  /*
-   * 영역 전체를 채우되 사진마다 지정한
-   * object-position을 기준으로 잘립니다.
-   */
   object-fit: cover;
-
   transform: scale(1.06);
 
   transition:
@@ -218,10 +694,6 @@ onBeforeUnmount(() => {
   inset: 0;
   z-index: 1;
 
-  /*
-   * 글자가 잘 보이도록 중앙은 비교적 밝고
-   * 좌우는 조금 더 어둡게 처리합니다.
-   */
   background:
     linear-gradient(
       90deg,
@@ -237,6 +709,7 @@ onBeforeUnmount(() => {
   width: min(950px, 90%);
   padding: 100px 20px;
   color: #ffffff;
+
   text-shadow:
     0 2px 8px rgb(15 23 42 / 70%),
     0 4px 18px rgb(15 23 42 / 45%);
@@ -251,7 +724,11 @@ onBeforeUnmount(() => {
 
 .hero h1 {
   margin: 0;
-  font-size: clamp(38px, 4.5vw, 62px);
+  font-size: clamp(
+    38px,
+    4.5vw,
+    62px
+  );
   line-height: 1.3;
   letter-spacing: -1.5px;
 }
@@ -342,8 +819,8 @@ onBeforeUnmount(() => {
   border: 1px solid #e2e8f0;
   border-radius: 18px;
   color: inherit;
-  background: white;
-  text-decoration: none;
+  background: #ffffff;
+  text-align: left;
 
   transition:
     transform 0.2s,
@@ -366,9 +843,309 @@ onBeforeUnmount(() => {
   line-height: 1.6;
 }
 
-.category-card span {
+.category-map-button {
+  padding: 0;
+  border: 0;
+  color: #2563eb;
+  background: transparent;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+
+  transition:
+    color 0.2s,
+    transform 0.2s;
+}
+
+.category-map-button:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+  transform: translateX(3px);
+}
+
+.map-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgb(15 23 42 / 76%);
+  backdrop-filter: blur(6px);
+}
+
+.map-modal {
+  width: min(1050px, 96vw);
+  max-height: 92vh;
+  overflow-y: auto;
+  padding: 28px;
+  border: 1px solid rgb(255 255 255 / 20%);
+  border-radius: 24px;
+  background: #ffffff;
+
+  box-shadow:
+    0 30px 80px rgb(15 23 42 / 45%),
+    0 0 0 1px rgb(255 255 255 / 12%);
+}
+
+.map-modal-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.map-modal-label {
+  margin: 0 0 7px;
   color: #2563eb;
   font-weight: 700;
+}
+
+.map-modal-heading h2 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.map-description {
+  margin: 12px 0 24px;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.map-close-button {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 43px;
+  height: 43px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: #475569;
+  background: #f1f5f9;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+
+  transition:
+    color 0.2s,
+    background 0.2s,
+    transform 0.2s;
+}
+
+.map-close-button:hover {
+  color: #ffffff;
+  background: #2563eb;
+  transform: rotate(90deg);
+}
+
+.map-status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 360px;
+  padding: 30px;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  color: #475569;
+  background: #f8fafc;
+  font-weight: 700;
+  text-align: center;
+}
+
+.map-status p {
+  margin: 14px 0 0;
+}
+
+.map-status-error {
+  color: #dc2626;
+  background: #fef2f2;
+}
+
+.map-status-subtext {
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.loading-spinner {
+  width: 42px;
+  height: 42px;
+  border: 4px solid #dbeafe;
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: loading-rotate 0.8s linear infinite;
+}
+
+.retry-button {
+  margin-top: 18px;
+  padding: 10px 18px;
+  border: 0;
+  border-radius: 10px;
+  color: #ffffff;
+  background: #2563eb;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.map-wrapper {
+  position: relative;
+  width: min(850px, 100%);
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid #334155;
+  border-radius: 20px;
+
+  background:
+    radial-gradient(
+      circle at center,
+      #334155 0%,
+      #0f172a 72%
+    );
+
+  box-shadow:
+    inset 0 0 40px rgb(15 23 42 / 45%),
+    0 18px 40px rgb(15 23 42 / 22%);
+}
+
+.region-map {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.map-point {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+}
+
+/*
+ * 지도 안 흰색 점을 너무 많이 가리지 않도록
+ * 기존 16px에서 12px로 줄였습니다.
+ */
+.point-circle {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  background: #2563eb;
+
+  box-shadow:
+    0 0 0 4px rgb(37 99 235 / 28%),
+    0 4px 12px rgb(15 23 42 / 55%);
+
+  transition:
+    background 0.2s,
+    transform 0.2s;
+}
+
+/* 포인트 주변에서 퍼지는 효과 */
+.point-pulse {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgb(37 99 235 / 75%);
+  border-radius: 50%;
+  animation: point-pulse 1.8s infinite;
+}
+
+.point-label {
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  z-index: 4;
+  padding: 6px 9px;
+  border: 1px solid rgb(255 255 255 / 18%);
+  border-radius: 7px;
+  color: #ffffff;
+  background: rgb(15 23 42 / 90%);
+
+  box-shadow:
+    0 5px 16px rgb(15 23 42 / 35%);
+
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+
+  transform:
+    translateX(-50%)
+    translateY(-5px);
+
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
+}
+
+.map-point:hover .point-circle,
+.map-point:focus-visible .point-circle {
+  background: #f43f5e;
+  transform: scale(1.35);
+}
+
+.map-point:hover .point-label,
+.map-point:focus-visible .point-label {
+  opacity: 1;
+
+  transform:
+    translateX(-50%)
+    translateY(0);
+}
+
+.map-point:focus-visible {
+  outline: none;
+}
+
+.map-summary {
+  margin-top: 18px;
+  padding: 16px 18px;
+  border: 1px solid #dbeafe;
+  border-radius: 14px;
+  background: #eff6ff;
+}
+
+.map-summary strong {
+  color: #1d4ed8;
+}
+
+.map-summary p {
+  margin: 7px 0 0;
+  color: #475569;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+@keyframes point-pulse {
+  0% {
+    opacity: 0.8;
+    transform: scale(0.65);
+  }
+
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(1.45);
+  }
+}
+
+@keyframes loading-rotate {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 900px) {
@@ -381,7 +1158,11 @@ onBeforeUnmount(() => {
   }
 
   .hero h1 {
-    font-size: clamp(34px, 6vw, 48px);
+    font-size: clamp(
+      34px,
+      6vw,
+      48px
+    );
   }
 
   .description {
@@ -399,6 +1180,62 @@ onBeforeUnmount(() => {
 
   .category-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .map-modal {
+    padding: 22px;
+  }
+}
+
+@media (max-width: 600px) {
+  .map-modal-backdrop {
+    align-items: flex-start;
+    padding: 12px;
+    overflow-y: auto;
+  }
+
+  .map-modal {
+    max-height: none;
+    margin: 12px 0;
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .map-modal-heading h2 {
+    font-size: 22px;
+  }
+
+  .map-description {
+    font-size: 14px;
+  }
+
+  .map-close-button {
+    width: 38px;
+    height: 38px;
+    font-size: 24px;
+  }
+
+  .map-status {
+    min-height: 260px;
+  }
+
+  .point-circle {
+    width: 9px;
+    height: 9px;
+    border-width: 2px;
+  }
+
+  .point-pulse {
+    width: 19px;
+    height: 19px;
+  }
+
+  .point-label {
+    display: none;
+  }
+
+  .map-summary {
+    font-size: 13px;
   }
 }
 

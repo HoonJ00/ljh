@@ -6,6 +6,7 @@ import {
   addFavorite,
   getFavorites,
 } from '@/utils/favoriteStorage'
+import { extractAreaName } from '@/utils/regionUtils'
 
 const route = useRoute()
 
@@ -18,46 +19,9 @@ const searchKeyword = ref('')
 // 현재 선택한 지역
 const selectedArea = ref('전체')
 
-// 광주광역시에 포함되는 자치구
-const gwangjuDistricts = [
-  '광산구',
-  '남구',
-  '동구',
-  '북구',
-  '서구',
-]
-
 const category = computed(() => {
   return findCategory(route.params.category)
 })
-
-/**
- * 주소에서 시·군·구 이름을 추출합니다.
- *
- * 광산구, 남구, 동구, 북구, 서구는
- * 모두 '광주광역시'로 반환합니다.
- *
- * 예:
- * 전남광주통합특별시 북구 무등로 1050
- * → 광주광역시
- *
- * 전남광주통합특별시 담양군 담양읍 죽녹원로 134
- * → 담양군
- */
-function extractAreaName(address) {
-  if (!address) {
-    return '기타'
-  }
-
-  const addressParts = address.trim().split(/\s+/)
-  const areaName = addressParts[1] || '기타'
-
-  if (gwangjuDistricts.includes(areaName)) {
-    return '광주광역시'
-  }
-
-  return areaName
-}
 
 /**
  * 현재 카테고리 데이터에 실제로 존재하는 지역 목록
@@ -65,29 +29,36 @@ function extractAreaName(address) {
 const areaList = computed(() => {
   const areas = places.value
     .map((place) => extractAreaName(place.addr1))
-    .filter((area) => area !== '기타')
+    .filter(Boolean)
 
   const uniqueAreas = [...new Set(areas)]
 
-  uniqueAreas.sort((a, b) => a.localeCompare(b, 'ko'))
+  uniqueAreas.sort((a, b) =>
+    a.localeCompare(b, 'ko'),
+  )
 
   return ['전체', ...uniqueAreas]
 })
 
 /**
- * 검색어와 선택 지역을 동시에 반영
+ * 검색어와 선택 지역을 동시에 반영합니다.
  */
 const filteredPlaces = computed(() => {
-  const keyword = searchKeyword.value.trim().toLowerCase()
+  const keyword =
+    searchKeyword.value.trim().toLowerCase()
 
   return places.value.filter((place) => {
-    const title = String(place.title || '').toLowerCase()
+    const title = String(
+      place.title || '',
+    ).toLowerCase()
 
-    const address = `${place.addr1 || ''} ${place.addr2 || ''}`
-      .trim()
-      .toLowerCase()
+    const address =
+      `${place.addr1 || ''} ${place.addr2 || ''}`
+        .trim()
+        .toLowerCase()
 
-    const placeArea = extractAreaName(place.addr1)
+    const placeArea =
+      extractAreaName(place.addr1)
 
     const matchesKeyword =
       !keyword ||
@@ -103,7 +74,31 @@ const filteredPlaces = computed(() => {
 })
 
 /**
- * 해당 장소가 이미 찜 목록에 들어 있는지 확인
+ * URL query의 area 값을 확인하여
+ * 해당 지역을 자동 선택합니다.
+ *
+ * 예:
+ * /category/restaurant?area=전주시
+ * → 전주시 자동 선택
+ */
+function applyAreaFromQuery() {
+  const requestedArea = String(
+    route.query.area || '',
+  ).trim()
+
+  if (
+    requestedArea &&
+    areaList.value.includes(requestedArea)
+  ) {
+    selectedArea.value = requestedArea
+    return
+  }
+
+  selectedArea.value = '전체'
+}
+
+/**
+ * 해당 장소가 이미 찜 목록에 들어 있는지 확인합니다.
  */
 function isPlaceFavorite(place) {
   if (!category.value) {
@@ -112,13 +107,15 @@ function isPlaceFavorite(place) {
 
   return favorites.value.some(
     (favorite) =>
-      favorite.categoryKey === category.value.key &&
-      String(favorite.contentid) === String(place.contentid),
+      favorite.categoryKey ===
+        category.value.key &&
+      String(favorite.contentid) ===
+        String(place.contentid),
   )
 }
 
 /**
- * 하트 클릭 시 관심 장소에 추가
+ * 하트 클릭 시 관심 장소에 추가합니다.
  */
 function handleFavorite(place) {
   if (!category.value) {
@@ -139,66 +136,107 @@ function handleFavorite(place) {
 }
 
 /**
- * 실제 이미지 주소가 깨졌을 때 대체 이미지 적용
+ * 실제 이미지 주소가 깨졌을 때
+ * 대체 이미지를 적용합니다.
  */
 function handleImageError(event) {
-  if (event.target.dataset.fallbackApplied === 'true') {
+  if (
+    event.target.dataset.fallbackApplied ===
+    'true'
+  ) {
     return
   }
 
   event.target.dataset.fallbackApplied = 'true'
-  event.target.src = '/images/image-preparing.jpg'
-  event.target.classList.add('fallback-image')
+  event.target.src =
+    '/images/image-preparing.jpg'
+  event.target.classList.add(
+    'fallback-image',
+  )
 }
 
+/**
+ * 카테고리 데이터를 불러옵니다.
+ */
 async function loadPlaces() {
   if (!category.value) {
-    errorMessage.value = '존재하지 않는 카테고리입니다.'
+    errorMessage.value =
+      '존재하지 않는 카테고리입니다.'
     places.value = []
+    selectedArea.value = '전체'
     return
   }
 
   loading.value = true
   errorMessage.value = ''
   searchKeyword.value = ''
-  selectedArea.value = '전체'
 
   try {
-    const response = await fetch(category.value.file)
+    const response = await fetch(
+      category.value.file,
+    )
 
     if (!response.ok) {
-      throw new Error('데이터 파일을 불러오지 못했습니다.')
+      throw new Error(
+        '데이터 파일을 불러오지 못했습니다.',
+      )
     }
 
     const data = await response.json()
 
     if (!Array.isArray(data.items)) {
-      throw new Error('JSON의 items 배열을 찾을 수 없습니다.')
+      throw new Error(
+        'JSON의 items 배열을 찾을 수 없습니다.',
+      )
     }
 
     places.value = data.items
 
-    // 다른 화면에서 찜 목록이 변경됐을 가능성이 있으므로 다시 불러오기
+    /*
+     * places에 데이터가 저장된 뒤
+     * URL의 area 값을 확인해야 areaList와 비교할 수 있습니다.
+     */
+    applyAreaFromQuery()
+
+    // 다른 화면에서 찜 목록이 변경됐을 수 있으므로 다시 불러옵니다.
     favorites.value = getFavorites()
   } catch (error) {
     console.error(error)
-    errorMessage.value = error.message
+
+    errorMessage.value =
+      error instanceof Error
+        ? error.message
+        : '데이터를 불러오지 못했습니다.'
+
     places.value = []
+    selectedArea.value = '전체'
   } finally {
     loading.value = false
   }
 }
 
+/**
+ * 지역 버튼을 직접 클릭했을 때 선택합니다.
+ */
 function selectArea(area) {
   selectedArea.value = area
 }
 
+/**
+ * 카테고리 또는 URL의 area 값이 바뀌면
+ * 데이터를 다시 불러옵니다.
+ */
 watch(
-  () => route.params.category,
+  () => [
+    route.params.category,
+    route.query.area,
+  ],
   () => {
     loadPlaces()
   },
-  { immediate: true },
+  {
+    immediate: true,
+  },
 )
 </script>
 
@@ -207,8 +245,12 @@ watch(
     <template v-if="category">
       <section class="page-heading">
         <p>광주·전라권 지역 정보</p>
+
         <h1>{{ category.name }}</h1>
-        <span>총 {{ places.length }}개의 장소가 있습니다.</span>
+
+        <span>
+          총 {{ places.length }}개의 장소가 있습니다.
+        </span>
       </section>
 
       <section class="search-section">
@@ -227,7 +269,11 @@ watch(
           <h2>지역별 보기</h2>
 
           <span>
-            {{ selectedArea === '전체' ? '전체 지역' : selectedArea }}
+            {{
+              selectedArea === '전체'
+                ? '전체 지역'
+                : selectedArea
+            }}
             · {{ filteredPlaces.length }}개
           </span>
         </div>
@@ -240,7 +286,8 @@ watch(
             :class="[
               'area-button',
               {
-                active: selectedArea === area,
+                active:
+                  selectedArea === area,
               },
             ]"
             @click="selectArea(area)"
@@ -250,22 +297,33 @@ watch(
         </div>
       </section>
 
-      <p v-if="loading" class="status-message">
+      <p
+        v-if="loading"
+        class="status-message"
+      >
         데이터를 불러오는 중입니다.
       </p>
 
-      <p v-else-if="errorMessage" class="status-message error">
+      <p
+        v-else-if="errorMessage"
+        class="status-message error"
+      >
         {{ errorMessage }}
       </p>
 
       <p
-        v-else-if="filteredPlaces.length === 0"
+        v-else-if="
+          filteredPlaces.length === 0
+        "
         class="status-message"
       >
         조건에 해당하는 장소가 없습니다.
       </p>
 
-      <section v-else class="place-grid">
+      <section
+        v-else
+        class="place-grid"
+      >
         <article
           v-for="place in filteredPlaces"
           :key="place.contentid"
@@ -277,14 +335,18 @@ watch(
               class="image-link"
             >
               <img
-                :src="place.firstimage || '/images/image-preparing.jpg'"
+                :src="
+                  place.firstimage ||
+                  '/images/image-preparing.jpg'
+                "
                 :alt="
                   place.firstimage
                     ? place.title
                     : `${place.title} 이미지 준비 중`
                 "
                 :class="{
-                  'fallback-image': !place.firstimage,
+                  'fallback-image':
+                    !place.firstimage,
                 }"
                 @error="handleImageError"
               />
@@ -295,13 +357,18 @@ watch(
               :class="[
                 'heart-button',
                 {
-                  active: isPlaceFavorite(place),
+                  active:
+                    isPlaceFavorite(place),
                 },
               ]"
               :aria-label="`${place.title} 관심 장소 추가`"
               @click="handleFavorite(place)"
             >
-              {{ isPlaceFavorite(place) ? '♥' : '♡' }}
+              {{
+                isPlaceFavorite(place)
+                  ? '♥'
+                  : '♡'
+              }}
             </button>
           </div>
 
@@ -317,7 +384,10 @@ watch(
               <h2>{{ place.title }}</h2>
 
               <p class="address">
-                {{ place.addr1 || '주소 정보 없음' }}
+                {{
+                  place.addr1 ||
+                  '주소 정보 없음'
+                }}
                 {{ place.addr2 }}
               </p>
 
@@ -330,7 +400,10 @@ watch(
       </section>
     </template>
 
-    <p v-else class="status-message error">
+    <p
+      v-else
+      class="status-message error"
+    >
       존재하지 않는 카테고리입니다.
     </p>
   </main>
@@ -413,6 +486,7 @@ watch(
   color: #334155;
   background: #ffffff;
   cursor: pointer;
+
   transition:
     color 0.2s,
     border-color 0.2s,
@@ -434,7 +508,8 @@ watch(
 
 .place-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns:
+    repeat(4, 1fr);
   gap: 22px;
 }
 
@@ -443,6 +518,7 @@ watch(
   border: 1px solid #e2e8f0;
   border-radius: 16px;
   background: #ffffff;
+
   transition:
     transform 0.2s,
     box-shadow 0.2s;
@@ -450,7 +526,10 @@ watch(
 
 .place-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgb(15 23 42 / 10%);
+
+  box-shadow:
+    0 12px 30px
+    rgb(15 23 42 / 10%);
 }
 
 .image-area {
@@ -473,7 +552,6 @@ watch(
   object-fit: cover;
 }
 
-/* 대체 이미지에만 적용 */
 .image-area img.fallback-image {
   box-sizing: border-box;
   object-fit: contain;
@@ -495,11 +573,15 @@ watch(
   border: 0;
   border-radius: 50%;
   color: #475569;
-  background: rgb(255 255 255 / 92%);
-  box-shadow: 0 4px 12px rgb(15 23 42 / 18%);
+  background:
+    rgb(255 255 255 / 92%);
+  box-shadow:
+    0 4px 12px
+    rgb(15 23 42 / 18%);
   font-size: 25px;
   line-height: 1;
   cursor: pointer;
+
   transition:
     color 0.2s,
     transform 0.2s,
@@ -566,13 +648,15 @@ watch(
 
 @media (max-width: 1100px) {
   .place-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns:
+      repeat(3, 1fr);
   }
 }
 
 @media (max-width: 800px) {
   .place-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns:
+      repeat(2, 1fr);
   }
 
   .area-filter-heading {
@@ -583,7 +667,8 @@ watch(
 
 @media (max-width: 600px) {
   .area-button {
-    min-width: calc(33.333% - 7px);
+    min-width:
+      calc(33.333% - 7px);
     padding: 10px 8px;
   }
 
@@ -602,7 +687,8 @@ watch(
 
 @media (max-width: 420px) {
   .area-button {
-    min-width: calc(50% - 5px);
+    min-width:
+      calc(50% - 5px);
   }
 }
 </style>
