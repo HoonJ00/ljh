@@ -35,198 +35,190 @@ const seasonImages = [
   },
 ]
 
-/*
- * jeolla-map.jpg 전체 이미지 기준 좌표입니다.
- *
- * top 값이 커질수록 아래로 이동합니다.
- * left 값이 커질수록 오른쪽으로 이동합니다.
- *
- * 흰색 점과 조금 어긋나는 경우
- * 0.1%~0.5% 단위로 수정하면 됩니다.
- */
+/* jeolla-map.jpg 전체 이미지 기준 지역별 포인트 좌표 */
 const regionPoints = [
   /* 전북 지역 */
   {
     name: '군산시',
-    top: '6.3%',
-    left: '47%',
+    top: '13.8%',
+    left: '44.2%',
   },
   {
     name: '익산시',
-    top: '7.8%',
-    left: '52.1%',
+    top: '10.7%',
+    left: '48.5%',
   },
   {
     name: '완주군',
-    top: '8.8%',
-    left: '57.7%',
-  },
-  {
-    name: '전주시',
-    top: '14.8%',
-    left: '54.8%',
-  },
-  {
-    name: '김제시',
-    top: '14.6%',
-    left: '49.2%',
-  },
-  {
-    name: '부안군',
-    top: '18.3%',
-    left: '46.8%',
-  },
-  {
-    name: '정읍시',
-    top: '23.9%',
-    left: '49.7%',
-  },
-  {
-    name: '고창군',
-    top: '32.4%',
-    left: '43.7%',
-  },
-  {
-    name: '순창군',
-    top: '33%',
-    left: '53.3%',
-  },
-  {
-    name: '임실군',
-    top: '25.8%',
-    left: '56.1%',
-  },
-  {
-    name: '남원시',
-    top: '33.4%',
-    left: '62.4%',
-  },
-  {
-    name: '장수군',
-    top: '25.2%',
-    left: '62.1%',
-  },
-  {
-    name: '진안군',
-    top: '15.6%',
-    left: '61.1%',
+    top: '11.1%',
+    left: '53.4%',
   },
   {
     name: '무주군',
-    top: '12.3%',
-    left: '65.8%',
+    top: '13.6%',
+    left: '63.1%',
+  },
+  {
+    name: '김제시',
+    top: '20.6%',
+    left: '46.4%',
+  },
+  {
+    name: '전주시',
+    top: '19.9%',
+    left: '50.4%',
+  },
+  {
+    name: '진안군',
+    top: '19.3%',
+    left: '57.5%',
+  },
+  {
+    name: '부안군',
+    top: '26.5%',
+    left: '41.2%',
+  },
+  {
+    name: '정읍시',
+    top: '29%',
+    left: '46.3%',
+  },
+  {
+    name: '임실군',
+    top: '28.5%',
+    left: '53.5%',
+  },
+  {
+    name: '장수군',
+    top: '26.1%',
+    left: '60.9%',
+  },
+  {
+    name: '고창군',
+    top: '37.4%',
+    left: '40.1%',
+  },
+  {
+    name: '순창군',
+    top: '39%',
+    left: '51.6%',
+  },
+  {
+    name: '남원시',
+    top: '37.6%',
+    left: '58.8%',
   },
 
   /* 광주·전남 지역 */
   {
-    name: '광주광역시',
-    top: '47.2%',
-    left: '46.9%',
+    name: '장성군',
+    top: '42.1%',
+    left: '43.8%',
   },
   {
     name: '영광군',
-    top: '41.4%',
-    left: '40.6%',
-  },
-  {
-    name: '장성군',
-    top: '40.2%',
-    left: '46.7%',
+    top: '45.1%',
+    left: '37%',
   },
   {
     name: '담양군',
-    top: '43.2%',
-    left: '51%',
+    top: '44.4%',
+    left: '48.3%',
   },
   {
     name: '곡성군',
-    top: '40.4%',
-    left: '57.1%',
+    top: '47.6%',
+    left: '54.5%',
   },
   {
     name: '구례군',
-    top: '45.1%',
-    left: '61%',
+    top: '46.9%',
+    left: '59.2%',
   },
   {
     name: '함평군',
-    top: '50.2%',
-    left: '41%',
+    top: '50.5%',
+    left: '38.4%',
+  },
+  {
+    name: '광주광역시',
+    top: '50.1%',
+    left: '45.2%',
   },
   {
     name: '나주시',
-    top: '52.1%',
-    left: '45%',
+    top: '58.5%',
+    left: '42.6%',
   },
   {
     name: '화순군',
-    top: '50.3%',
-    left: '50.8%',
+    top: '57.3%',
+    left: '48.5%',
   },
   {
     name: '순천시',
-    top: '55.1%',
-    left: '60.5%',
+    top: '57.3%',
+    left: '57%',
   },
   {
     name: '광양시',
-    top: '57.6%',
-    left: '66%',
+    top: '55.5%',
+    left: '62.8%',
   },
   {
     name: '무안군',
-    top: '53.5%',
-    left: '40.9%',
+    top: '61.2%',
+    left: '37.2%',
   },
   {
     name: '목포시',
-    top: '62.3%',
-    left: '39%',
+    top: '67.3%',
+    left: '34.2%',
   },
   {
     name: '영암군',
-    top: '62.4%',
-    left: '45.1%',
+    top: '66.4%',
+    left: '42.3%',
   },
   {
     name: '강진군',
-    top: '69.8%',
-    left: '46.2%',
+    top: '72.7%',
+    left: '43.1%',
   },
   {
     name: '장흥군',
-    top: '68.7%',
-    left: '49.1%',
+    top: '68.2%',
+    left: '46.6%',
   },
   {
     name: '보성군',
-    top: '64.4%',
-    left: '53.4%',
-  },
-  {
-    name: '여수시',
-    top: '63.6%',
-    left: '65.9%',
+    top: '65.5%',
+    left: '52.2%',
   },
   {
     name: '고흥군',
-    top: '72.1%',
-    left: '57.3%',
+    top: '75.7%',
+    left: '56.3%',
   },
   {
-    name: '해남군',
-    top: '73.2%',
-    left: '42.9%',
+    name: '여수시',
+    top: '68.2%',
+    left: '63.2%',
+  },
+  {
+    name: '신안군',
+    top: '75.9%',
+    left: '25.4%',
   },
   {
     name: '진도군',
-    top: '76.6%',
-    left: '36.2%',
+    top: '83.8%',
+    left: '31.9%',
   },
   {
-    name: '완도군',
-    top: '84.2%',
-    left: '45.2%',
+    name: '해남군',
+    top: '83.1%',
+    left: '39.2%',
   },
 ]
 
@@ -242,8 +234,8 @@ const isMapLoading = ref(false)
 const mapError = ref('')
 
 /*
- * 현재 선택한 카테고리의 데이터가 존재하는
- * 지역 포인트만 반환하고 가나다순으로 정렬합니다.
+ * 현재 선택한 카테고리의 JSON 데이터에 존재하는 지역만
+ * 지도에 표시하고 가나다순으로 정렬합니다.
  */
 const visibleRegionPoints = computed(() => {
   return regionPoints
@@ -289,6 +281,10 @@ function restartSlideTimer() {
   startSlideTimer()
 }
 
+/*
+ * 선택한 카테고리의 JSON 파일을 불러온 뒤
+ * 실제 데이터가 존재하는 지역만 추출합니다.
+ */
 async function openRegionMap(category) {
   selectedCategory.value = category
   availableRegions.value = []
@@ -306,7 +302,9 @@ async function openRegionMap(category) {
       )
     }
 
-    const response = await fetch(category.file)
+    const response = await fetch(
+      category.file,
+    )
 
     if (!response.ok) {
       throw new Error(
@@ -364,7 +362,8 @@ function selectRegion(regionName) {
     return
   }
 
-  const categoryKey = selectedCategory.value.key
+  const categoryKey =
+    selectedCategory.value.key
 
   closeRegionMap()
 
@@ -421,7 +420,8 @@ onBeforeUnmount(() => {
           :class="[
             'hero-background',
             {
-              active: currentSlide === index,
+              active:
+                currentSlide === index,
             },
           ]"
         />
@@ -457,7 +457,8 @@ onBeforeUnmount(() => {
           :class="[
             'slide-indicator',
             {
-              active: currentSlide === index,
+              active:
+                currentSlide === index,
             },
           ]"
           :aria-label="`${image.season} 배경 이미지 보기`"
@@ -569,14 +570,20 @@ onBeforeUnmount(() => {
             <button
               type="button"
               class="retry-button"
-              @click="openRegionMap(selectedCategory)"
+              @click="
+                openRegionMap(
+                  selectedCategory,
+                )
+              "
             >
               다시 불러오기
             </button>
           </div>
 
           <div
-            v-else-if="visibleRegionPoints.length === 0"
+            v-else-if="
+              visibleRegionPoints.length === 0
+            "
             class="map-status"
           >
             <p>
@@ -597,6 +604,7 @@ onBeforeUnmount(() => {
               src="/images/jeolla-map.jpg"
               alt="광주·전라권 지역 선택 지도"
               class="region-map"
+              draggable="false"
             />
 
             <button
@@ -609,9 +617,12 @@ onBeforeUnmount(() => {
                 left: region.left,
               }"
               :aria-label="`${region.name} 선택`"
-              @click="selectRegion(region.name)"
+              @click.stop="
+                selectRegion(region.name)
+              "
             >
               <span class="point-pulse"></span>
+
               <span class="point-circle"></span>
 
               <span class="point-label">
@@ -636,7 +647,10 @@ onBeforeUnmount(() => {
             <p>
               {{
                 visibleRegionPoints
-                  .map((region) => region.name)
+                  .map(
+                    (region) =>
+                      region.name,
+                  )
                   .join(', ')
               }}
             </p>
@@ -711,8 +725,10 @@ onBeforeUnmount(() => {
   color: #ffffff;
 
   text-shadow:
-    0 2px 8px rgb(15 23 42 / 70%),
-    0 4px 18px rgb(15 23 42 / 45%);
+    0 2px 8px
+      rgb(15 23 42 / 70%),
+    0 4px 18px
+      rgb(15 23 42 / 45%);
 }
 
 .region {
@@ -746,10 +762,12 @@ onBeforeUnmount(() => {
   bottom: 26px;
   z-index: 3;
   padding: 7px 14px;
-  border: 1px solid rgb(255 255 255 / 45%);
+  border: 1px solid
+    rgb(255 255 255 / 45%);
   border-radius: 999px;
   color: #ffffff;
-  background: rgb(15 23 42 / 36%);
+  background:
+    rgb(15 23 42 / 36%);
   backdrop-filter: blur(6px);
   font-size: 14px;
   font-weight: 700;
@@ -770,9 +788,11 @@ onBeforeUnmount(() => {
   width: 11px;
   height: 11px;
   padding: 0;
-  border: 1px solid rgb(255 255 255 / 65%);
+  border: 1px solid
+    rgb(255 255 255 / 65%);
   border-radius: 999px;
-  background: rgb(255 255 255 / 45%);
+  background:
+    rgb(255 255 255 / 45%);
   cursor: pointer;
 
   transition:
@@ -782,7 +802,8 @@ onBeforeUnmount(() => {
 }
 
 .slide-indicator:hover {
-  background: rgb(255 255 255 / 85%);
+  background:
+    rgb(255 255 255 / 85%);
 }
 
 .slide-indicator.active {
@@ -809,7 +830,8 @@ onBeforeUnmount(() => {
 
 .category-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns:
+    repeat(4, 1fr);
   gap: 20px;
   margin-top: 32px;
 }
@@ -829,7 +851,10 @@ onBeforeUnmount(() => {
 
 .category-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 12px 30px rgb(15 23 42 / 10%);
+
+  box-shadow:
+    0 12px 30px
+    rgb(15 23 42 / 10%);
 }
 
 .category-card h3 {
@@ -871,7 +896,8 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: rgb(15 23 42 / 76%);
+  background:
+    rgb(15 23 42 / 76%);
   backdrop-filter: blur(6px);
 }
 
@@ -880,13 +906,16 @@ onBeforeUnmount(() => {
   max-height: 92vh;
   overflow-y: auto;
   padding: 28px;
-  border: 1px solid rgb(255 255 255 / 20%);
+  border: 1px solid
+    rgb(255 255 255 / 20%);
   border-radius: 24px;
   background: #ffffff;
 
   box-shadow:
-    0 30px 80px rgb(15 23 42 / 45%),
-    0 0 0 1px rgb(255 255 255 / 12%);
+    0 30px 80px
+      rgb(15 23 42 / 45%),
+    0 0 0 1px
+      rgb(255 255 255 / 12%);
 }
 
 .map-modal-heading {
@@ -977,7 +1006,9 @@ onBeforeUnmount(() => {
   border: 4px solid #dbeafe;
   border-top-color: #2563eb;
   border-radius: 50%;
-  animation: loading-rotate 0.8s linear infinite;
+  animation:
+    loading-rotate 0.8s
+    linear infinite;
 }
 
 .retry-button {
@@ -998,23 +1029,22 @@ onBeforeUnmount(() => {
   overflow: hidden;
   border: 1px solid #334155;
   border-radius: 20px;
-
-  background:
-    radial-gradient(
-      circle at center,
-      #334155 0%,
-      #0f172a 72%
-    );
+  background: #ffffff;
+  cursor: default;
+  user-select: none;
 
   box-shadow:
-    inset 0 0 40px rgb(15 23 42 / 45%),
-    0 18px 40px rgb(15 23 42 / 22%);
+    inset 0 0 30px
+      rgb(15 23 42 / 8%),
+    0 18px 40px
+      rgb(15 23 42 / 18%);
 }
 
 .region-map {
   display: block;
   width: 100%;
   height: auto;
+  pointer-events: none;
 }
 
 .map-point {
@@ -1026,55 +1056,58 @@ onBeforeUnmount(() => {
   border: 0;
   background: transparent;
   cursor: pointer;
-  transform: translate(-50%, -50%);
+
+  transform:
+    translate(-50%, -50%);
 }
 
-/*
- * 지도 안 흰색 점을 너무 많이 가리지 않도록
- * 기존 16px에서 12px로 줄였습니다.
- */
 .point-circle {
   position: relative;
   z-index: 2;
   display: block;
-  width: 12px;
-  height: 12px;
+  width: 11px;
+  height: 11px;
   border: 2px solid #ffffff;
   border-radius: 50%;
   background: #2563eb;
 
   box-shadow:
-    0 0 0 4px rgb(37 99 235 / 28%),
-    0 4px 12px rgb(15 23 42 / 55%);
+    0 0 0 3px
+      rgb(37 99 235 / 28%),
+    0 3px 9px
+      rgb(15 23 42 / 40%);
 
   transition:
     background 0.2s,
     transform 0.2s;
 }
 
-/* 포인트 주변에서 퍼지는 효과 */
 .point-pulse {
   position: absolute;
-  width: 24px;
-  height: 24px;
-  border: 2px solid rgb(37 99 235 / 75%);
+  width: 22px;
+  height: 22px;
+  border: 2px solid
+    rgb(37 99 235 / 65%);
   border-radius: 50%;
-  animation: point-pulse 1.8s infinite;
+
+  animation:
+    point-pulse 1.8s infinite;
 }
 
 .point-label {
   position: absolute;
-  top: 22px;
+  top: 21px;
   left: 50%;
   z-index: 4;
   padding: 6px 9px;
-  border: 1px solid rgb(255 255 255 / 18%);
   border-radius: 7px;
   color: #ffffff;
-  background: rgb(15 23 42 / 90%);
+  background:
+    rgb(15 23 42 / 90%);
 
   box-shadow:
-    0 5px 16px rgb(15 23 42 / 35%);
+    0 5px 16px
+    rgb(15 23 42 / 35%);
 
   font-size: 12px;
   font-weight: 700;
@@ -1092,13 +1125,15 @@ onBeforeUnmount(() => {
 }
 
 .map-point:hover .point-circle,
-.map-point:focus-visible .point-circle {
+.map-point:focus-visible
+  .point-circle {
   background: #f43f5e;
   transform: scale(1.35);
 }
 
 .map-point:hover .point-label,
-.map-point:focus-visible .point-label {
+.map-point:focus-visible
+  .point-label {
   opacity: 1;
 
   transform:
@@ -1179,7 +1214,8 @@ onBeforeUnmount(() => {
   }
 
   .category-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns:
+      repeat(2, 1fr);
   }
 
   .map-modal {
@@ -1226,8 +1262,8 @@ onBeforeUnmount(() => {
   }
 
   .point-pulse {
-    width: 19px;
-    height: 19px;
+    width: 18px;
+    height: 18px;
   }
 
   .point-label {

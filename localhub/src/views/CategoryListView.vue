@@ -511,9 +511,21 @@ watch(
   grid-template-columns:
     repeat(4, 1fr);
   gap: 22px;
+
+  /*
+   * 같은 행에 있는 카드들의 높이를
+   * 가장 긴 카드 높이에 맞춥니다.
+   */
+  align-items: stretch;
 }
 
 .place-card {
+  /*
+   * 카드 내부를 세로 방향 Flex 구조로 만듭니다.
+   */
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
   overflow: hidden;
   border: 1px solid #e2e8f0;
   border-radius: 16px;
@@ -534,6 +546,7 @@ watch(
 
 .image-area {
   position: relative;
+  flex-shrink: 0;
   height: 190px;
   overflow: hidden;
   background: #e2e8f0;
@@ -599,18 +612,34 @@ watch(
   background: #fff1f2;
 }
 
+/*
+ * 이미지 아래의 링크 영역이
+ * 카드의 남은 높이를 전부 차지합니다.
+ */
 .card-content-link {
-  display: block;
+  display: flex;
+  flex: 1;
+  min-height: 0;
   color: inherit;
   text-decoration: none;
 }
 
+/*
+ * 제목과 주소가 짧더라도 상세보기 버튼이
+ * 항상 하단으로 내려가도록 세로 Flex를 적용합니다.
+ */
 .card-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
   padding: 20px;
 }
 
 .category-badge {
   display: inline-block;
+  flex-shrink: 0;
   padding: 5px 9px;
   border-radius: 20px;
   color: #2563eb;
@@ -622,17 +651,26 @@ watch(
 .card-content h2 {
   margin: 14px 0 10px;
   font-size: 19px;
+  line-height: 1.5;
+  word-break: keep-all;
 }
 
 .address {
-  min-height: 44px;
-  margin-bottom: 18px;
+  margin: 0;
   color: #64748b;
   font-size: 14px;
   line-height: 1.6;
+  word-break: keep-all;
 }
 
+/*
+ * 남아 있는 공간을 위쪽 여백으로 사용해서
+ * 상세보기 링크를 카드 하단에 고정합니다.
+ */
 .detail-link {
+  display: inline-block;
+  margin-top: auto;
+  padding-top: 22px;
   color: #2563eb;
   font-weight: 700;
 }
